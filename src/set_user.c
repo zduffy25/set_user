@@ -677,8 +677,8 @@ PG_FUNCTION_INFO_V1(set_session_auth);
 Datum
 set_session_auth(PG_FUNCTION_ARGS)
 {
-	bool orig_exit_on_err = ExitOnAnyError;
 #if NO_ASSERT_AUTH_UID_ONCE
+	bool orig_exit_on_err = ExitOnAnyError;
 	char		   *newuser = text_to_cstring(PG_GETARG_TEXT_PP(0));
 	HeapTuple		roleTup;
 	bool			NewUser_is_superuser = false;
@@ -701,12 +701,11 @@ set_session_auth(PG_FUNCTION_ARGS)
 				 errhint("Use \'set_user_u\' to escalate.")));
 
 	_InitializeSessionUserId(newuser, InvalidOid);
+	ExitOnAnyError = orig_exit_on_err;
 #else
-	ExitOnAnyError = exit_on_error;
 	elog(ERROR, "Assert build disables set_session_auth()");
 #endif
 
-	ExitOnAnyError = orig_exit_on_err;
 	PG_RETURN_TEXT_P(cstring_to_text("OK"));
 }
 
